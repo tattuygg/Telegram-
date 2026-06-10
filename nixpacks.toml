@@ -1,5 +1,0 @@
-[build]
-nixpkgs = ["python311", "python311Packages.pip"]
-
-[start]
-cmd = "python main.py"
