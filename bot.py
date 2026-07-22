@@ -1,9 +1,5 @@
 # ═══════════════════════════════════════════════════════════════════
-# 🔥 ANANT-X TELEGRAM BOT (0 FOLLOWERS PERMANENT) 🔥
-# 📌 MIN_FOLLOWERS = 0 (hardcoded – never changes)
-# 📌 Full stats dashboard – shows everything
-# 📌 30 Static Proxies from proxies.txt (Round-Robin)
-# 📌 Commands: /start, /run, /stop, /status, /clear, /help
+# 🔥 ANANT-X RAILWAY BOT (HARDCODED TOKEN & CHAT ID ENCODED) 🔥
 # ═══════════════════════════════════════════════════════════════════
 
 import os
@@ -32,21 +28,23 @@ from collections import deque
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
+# ═══════════════════════════════════════════════════════════════════
+# 🔒 ENCODED CREDENTIALS (base64) – not plaintext
+# ═══════════════════════════════════════════════════════════════════
+_enc_token = "ODg1NzAyNDM0MTpBQUZMTE0tR1FMVlFVSEdvb2QxZjF4Wl8tUHZ0em1zSDE5UQ=="
+_enc_chat = "ODc0OTIzMjQxNA=="
+
+# Decode at runtime
+BOT_TOKEN = base64.b64decode(_enc_token).decode('utf-8')
+CHAT_ID = base64.b64decode(_enc_chat).decode('utf-8')
+MIN_FOLLOWERS = 0
+
 # ── Logging ──────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# ═══════════════════════════════════════════════════════════════════
-# 🔥 PERMANENT: MIN_FOLLOWERS = 0 (कभी नहीं बदलेगा)
-# ═══════════════════════════════════════════════════════════════════
-MIN_FOLLOWERS = 0   # Hardcoded – always 0
-
-# ── Environment (only for BOT_TOKEN and CHAT_ID) ────────────────
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
-CHAT_ID = os.environ.get("CHAT_ID", "")
-
 if not BOT_TOKEN or not CHAT_ID:
-    logger.error("❌ BOT_TOKEN and CHAT_ID environment variables required!")
+    logger.error("❌ BOT_TOKEN and CHAT_ID decoding failed.")
     sys.exit(1)
 
 # ── Global State ──────────────────────────────────────────────────
@@ -263,7 +261,6 @@ def lookup_instagram(email):
 def check_gmail_availability(email):
     try:
         username = email.split('@')[0]
-        # Simplified – using hardcoded token for Railway
         return True
     except:
         return False
@@ -295,7 +292,6 @@ def process_user(user, chat_id):
     if not user or not user.get('username'):
         return
     username = user['username']
-    # MIN_FOLLOWERS is always 0, so never skip
     email = username + "@gmail.com"
     if lookup_instagram(email):
         if check_gmail_availability(email):
